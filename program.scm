@@ -1,7 +1,7 @@
 (import (scheme base)
 		(scheme write))
 
-;; Print Resul
+;; Print Result
 ;;
 ;; Displays the result of a given expression, followed by a newline
 (define (p e)
@@ -36,13 +36,14 @@
 
 ;;; Exercise 1.3
 
+(define (square n) (* n n))
+
 ;; Sum Biggest Squares
 ;;
 ;; Takes 3 arguments and returns the sum of squares of the two largest
 (define (sum-big-squares a b c)
-  (define (sq n) (* n n))
   (define (sum-of-squares a b)
-	(+ (sq a) (sq b)))
+	(+ (square a) (square b)))
   (define (max n m)
 	(if (> n m) n m))
   (if (> a b)
@@ -74,3 +75,71 @@
 		 0
 		 y))))
 (p (testm 0 (t))) ; -> Fine, because macro is transformed before evaluation
+
+
+;;; Exercise 1.6
+
+(define (abs n)
+  (if (< n 0)
+	  (- n)
+	  n))
+(define (average x y)
+  (/ (+ x y) 2))
+(define (sqrt x)
+  (define (improve guess)
+	(average guess (/ x guess)))
+  (define (good-enough? guess)
+	(< (abs (- (square guess) x)) 0.001))
+  (define (sqrt-iter guess)
+	(if (good-enough? guess)
+		guess
+		(sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+
+(p (sqrt 9))
+(p (sqrt (+ 100 37)))
+(p (sqrt (+ (sqrt 2) (sqrt 3))))
+(p (square (sqrt 1000)))
+
+;; new-if, a procedure rather than syntax, will eagerly evaluate both clauses!
+(define (new-if predicate then-clause else-clause)
+  (cond (predicate then-clause)
+		(else else-clause)))
+(p (new-if (= 2 3 ) 0 5))
+(p (new-if (= 1 1 ) 0 5))
+(new-if (= 2 3) (p "oh noes!") (p "yep"))
+
+;;; Exercise 1.9
+
+(let ((inc (lambda (x) (+ x 1)))
+	  (dec (lambda (y) (- y 1))))
+
+  ;; Recursive addition. This will explode the stack
+  (define (+ a b)
+	(if (= a 0)
+		b
+		(inc (+ (dec a) b))))
+  (p (+ 4 5))
+
+  ;; Tail recursive version. This uses contant stack space
+  (define (+ a b)
+	(if (= a 0)
+		b
+		(+ (dec a) (inc b))))
+  (p (+ 4 5)))
+
+;;;; Exercise 1.10
+
+;; The Ackermann's function
+(define (A x y)
+  (cond ((= y 0) 0)
+		((= x 0) (* 2 y))
+		((= y 1) 2)
+		(else (A (- x 1)
+				 (A x (- y 1))))))
+(p (A 1 10))
+(p (A 2 4))
+(p (A 3 3))
+
+; exit code..
+0
