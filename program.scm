@@ -1,4 +1,5 @@
-(import (scheme base)
+(import (feersum builtin macros)
+		(scheme base)
 		(scheme write))
 
 ;; Print Result
@@ -140,6 +141,28 @@
 (p (A 1 10))
 (p (A 2 4))
 (p (A 3 3))
+
+;;;; Exercise 1.11
+(define (f-rec n)
+  (if (< n 3)
+	  n
+	  (+ (f-rec (- n 1)) (* 2 (f-rec (- n 2))) (* 3 (f-rec (- n 3))))))
+(p (f-rec 2))
+(p (f-rec 10))
+(p (f-rec 20))
+
+(define (f-iter n)
+  (define (f n g h i)
+	(if (> n 0)
+		(f (- n 1) h i (+ (* 3 g) (* 2 h) i))
+		i))
+  (if (< n 3)
+	  n
+	  (f (- n 2) 0 1 2)))
+(p (f-iter 2))
+(p (f-iter 10))
+(p (f-iter 20))
+(p (f-iter 100))
 
 ; exit code..
 0
