@@ -1,6 +1,6 @@
 (import (feersum builtin macros)
-		(scheme base)
-		(scheme write))
+    (scheme base)
+    (scheme write))
 
 ;; Print Result
 ;;
@@ -20,20 +20,20 @@
 (p (+ a b (* a b)))
 (p (= a b))
 (p (if (and (> b a) (< b (* a b)))
-	   b
-	   a))
+     b
+     a))
 (p (cond ((= a 4) 6)
-		 ((= b 4) (+ 6 7 a))
-		 (else 25)))
+     ((= b 4) (+ 6 7 a))
+     (else 25)))
 (p (+ 2 (if (> b a) b a)))
 (p (* (cond ((> a b) a)
-			((< a b) b)
-			(else -1))
-	  (+ a 1)))
+      ((< a b) b)
+      (else -1))
+    (+ a 1)))
 
 ;;; Exercise 1.2
 (p (/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5)))))
-	  (* 3 (- 6 2) (- 2 7))))
+    (* 3 (- 6 2) (- 2 7))))
 
 ;;; Exercise 1.3
 
@@ -44,12 +44,12 @@
 ;; Takes 3 arguments and returns the sum of squares of the two largest
 (define (sum-big-squares a b c)
   (define (sum-of-squares a b)
-	(+ (square a) (square b)))
+  (+ (square a) (square b)))
   (define (max n m)
-	(if (> n m) n m))
+  (if (> n m) n m))
   (if (> a b)
-	  (sum-of-squares a (max b c))
-	  (sum-of-squares b (max a c))))
+    (sum-of-squares a (max b c))
+    (sum-of-squares b (max a c))))
 
 (p (sum-big-squares 3 2 10))
 
@@ -66,15 +66,15 @@
 (define (t) (t))
 (define (test x y)
   (if (= x 0)
-	  0
-	  y))
+    0
+    y))
 ; (p (test 0 (t))) ; ~> would recurse indefinitely because earger applicative order
 (define-syntax testm
   (syntax-rules ()
-	((_ x y)
-	 (if (= x 0)
-		 0
-		 y))))
+  ((_ x y)
+   (if (= x 0)
+     0
+     y))))
 (p (testm 0 (t))) ; -> Fine, because macro is transformed before evaluation
 
 
@@ -82,19 +82,19 @@
 
 (define (abs n)
   (if (< n 0)
-	  (- n)
-	  n))
+    (- n)
+    n))
 (define (average x y)
   (/ (+ x y) 2))
 (define (sqrt x)
   (define (improve guess)
-	(average guess (/ x guess)))
+  (average guess (/ x guess)))
   (define (good-enough? guess)
-	(< (abs (- (square guess) x)) 0.001))
+  (< (abs (- (square guess) x)) 0.001))
   (define (sqrt-iter guess)
-	(if (good-enough? guess)
-		guess
-		(sqrt-iter (improve guess))))
+  (if (good-enough? guess)
+    guess
+    (sqrt-iter (improve guess))))
   (sqrt-iter 1.0))
 
 (p (sqrt 9))
@@ -105,7 +105,7 @@
 ;; new-if, a procedure rather than syntax, will eagerly evaluate both clauses!
 (define (new-if predicate then-clause else-clause)
   (cond (predicate then-clause)
-		(else else-clause)))
+    (else else-clause)))
 (p (new-if (= 2 3 ) 0 5))
 (p (new-if (= 1 1 ) 0 5))
 (new-if (= 2 3) (p "oh noes!") (p "yep"))
@@ -113,20 +113,20 @@
 ;;; Exercise 1.9
 
 (let ((inc (lambda (x) (+ x 1)))
-	  (dec (lambda (y) (- y 1))))
+    (dec (lambda (y) (- y 1))))
 
   ;; Recursive addition. This will explode the stack
   (define (+ a b)
-	(if (= a 0)
-		b
-		(inc (+ (dec a) b))))
+  (if (= a 0)
+    b
+    (inc (+ (dec a) b))))
   (p (+ 4 5))
 
   ;; Tail recursive version. This uses contant stack space
   (define (+ a b)
-	(if (= a 0)
-		b
-		(+ (dec a) (inc b))))
+  (if (= a 0)
+    b
+    (+ (dec a) (inc b))))
   (p (+ 4 5)))
 
 ;;;; Exercise 1.10
@@ -134,10 +134,10 @@
 ;; The Ackermann's function
 (define (A x y)
   (cond ((= y 0) 0)
-		((= x 0) (* 2 y))
-		((= y 1) 2)
-		(else (A (- x 1)
-				 (A x (- y 1))))))
+    ((= x 0) (* 2 y))
+    ((= y 1) 2)
+    (else (A (- x 1)
+         (A x (- y 1))))))
 (p (A 1 10))
 (p (A 2 4))
 (p (A 3 3))
@@ -145,20 +145,20 @@
 ;;;; Exercise 1.11
 (define (f-rec n)
   (if (< n 3)
-	  n
-	  (+ (f-rec (- n 1)) (* 2 (f-rec (- n 2))) (* 3 (f-rec (- n 3))))))
+    n
+    (+ (f-rec (- n 1)) (* 2 (f-rec (- n 2))) (* 3 (f-rec (- n 3))))))
 (p (f-rec 2))
 (p (f-rec 10))
 (p (f-rec 20))
 
 (define (f-iter n)
   (define (f n g h i)
-	(if (> n 0)
-		(f (- n 1) h i (+ (* 3 g) (* 2 h) i))
-		i))
+  (if (> n 0)
+    (f (- n 1) h i (+ (* 3 g) (* 2 h) i))
+    i))
   (if (< n 3)
-	  n
-	  (f (- n 2) 0 1 2)))
+    n
+    (f (- n 2) 0 1 2)))
 (p (f-iter 2))
 (p (f-iter 10))
 (p (f-iter 20))
